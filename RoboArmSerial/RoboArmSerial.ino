@@ -55,7 +55,7 @@ void parseJoints(String input, int* outputArray, int arraySize) {
 void setJoints(int jointAngles[]) {
 
   jointAngles[0] = constrain(jointAngles[0], 0, 180);  //base
-  jointAngles[1] = constrain(jointAngles[1], 0, 255);  //shoulder
+  jointAngles[1] = constrain(jointAngles[1], 0, 270);  //shoulder
   jointAngles[2] = constrain(jointAngles[2], 0, 270);  //elbow
   jointAngles[3] = constrain(jointAngles[3], 0, 270);  //wrist 1
   jointAngles[4] = constrain(jointAngles[4], 0, 180);  //wrist 2
@@ -83,32 +83,32 @@ void debug(int jointAngles[], int length){
   }
 }
 
-void SGServoControl(int pin, int degree) {  //control function for the 2 claw servos 0-180 degrees
-  const int servomin = 100;                 // This is the 'minimum' pulse length count (out of 4096) 120
-  const int servomax = 445;                 // This is the 'maximum' pulse length count (out of 4096)
-  int pulse = map(degree, 0, 180, servomin, servomax);
-  pwm.setPWM(pin, 0, pulse);
+void MGServoControl(int pin, int degree){ //control function for MG996r servos 0-180 degrees
+  const int servomin = 544;// This is pulse length in microseconds for min position
+  const int servomax = 2250;// This is pulse length in microseconds for max position
+  int ms = map(degree, 0, 180, servomin, servomax); //command in microseconds
+  pwm.writeMicroseconds(pin,ms);
 }
 
-void MGServoControl(int pin, int degree) {  //control function for MG996r servos 0-180 degrees
-  const int servomin = 120;                 // This is the 'minimum' pulse length count (out of 4096) 120
-  const int servomax = 470;                 // This is the 'maximum' pulse length count (out of 4096) 494 prev slip a four of the time
-  int pulse = map(degree, 0, 180, servomin, servomax);
-  pwm.setPWM(pin, 0, pulse);
+void DSServoControl(int pin ,int degree){ //control function for DS3218 servos 0-270
+  const int servomin = 500;// This is pulse length in microseconds for min position
+  const int servomax = 2350;// This is pulse length in microseconds for max position
+  int ms = map(degree, 0, 270, servomin, servomax); //command in microseconds
+  pwm.writeMicroseconds(pin,ms);
 }
 
-void DSServoControl(int pin, int degree) {  //control function for DS3218 servos 0-270
-  const int servomin = 120;                 // This is the 'minimum' pulse length count (out of 4096)
-  const int servomax = 500;                 // This is the 'maximum' pulse length count (out of 4096)
-  int pulse = map(degree, 0, 270, servomin, servomax);
-  pwm.setPWM(pin, 0, pulse);
+void TDServoControl(int pin, int degree){ //control function for TD-8160MG servos 0-255
+  const int servomin = 500;// This is pulse length in microseconds for min position
+  const int servomax = 2410;// This is pulse length in microseconds for max position
+  int ms = map(degree, 0,270, servomin, servomax); //command in microseconds
+  pwm.writeMicroseconds(pin,ms);
 }
 
-void TDServoControl(int pin, int degree) {  //control function for TD-8160MG servos 0-255
-  const int servomin = 65;                  // This is the 'minimum' pulse length count (out of 4096)
-  const int servomax = 500;                 // This is the 'maximum' pulse length count (out of 4096)
-  int pulse = map(degree, 0, 255, servomin, servomax);
-  pwm.setPWM(pin, 0, pulse);
+void SGServoControl(int pin, int degree){ //control function for the 2 claw servos 0-180 degrees
+  const int servomin = 500;// This is pulse length in microseconds for min position
+  const int servomax = 2400;// This is pulse length in microseconds for max position
+  int ms = map(degree, 0,180, servomin, servomax); //command in microseconds
+  pwm.writeMicroseconds(pin,ms);
 }
 
 void base(int degree) {
@@ -118,22 +118,22 @@ void shoulder(int degree) {
   TDServoControl(9, degree);
 }
 void elbow(int degree) {
-  DSServoControl(10, 270 - degree);
+  DSServoControl(10, degree);
 }
 void wrist1(int degree) {
-  DSServoControl(11, 270 - degree);
+  DSServoControl(11, degree);
 }
 void wrist2(int degree) {
-  MGServoControl(12, 270 - degree);
+  MGServoControl(12, degree);
 }
 void wrist3(int degree) {
-  MGServoControl(13, 270 - degree);
+  MGServoControl(13, degree);
 }
 
 void gripper(bool status) {
   if (status) {
-    SGServoControl(14, 70);  //closed
-    SGServoControl(15, 70);
+    SGServoControl(14, 60);  //closed
+    SGServoControl(15, 60);
   } else {
     SGServoControl(14, 0);  //open
     SGServoControl(15, 0);
