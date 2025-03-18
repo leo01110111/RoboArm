@@ -1,7 +1,7 @@
 import serial
 import time
 
-ser = serial.Serial(port='/dev/tty.usbmodem14101', baudrate=9600, timeout=1)  # Adjust the port. Use "ls /dev/tty.*" in root to find port
+ser = serial.Serial(port='/dev/cu.usbmodem14201', baudrate=9600, timeout=1)  # Adjust the port. Use "ls /dev/tty.*" in root to find port
 time.sleep(2)  # Wait for the connection to initialize
 
 default_pos = [90,115,150,100,90,90,0] #Should result in everything pointing upwards
